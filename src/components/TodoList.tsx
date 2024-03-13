@@ -1,3 +1,4 @@
+import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { FilterValuesType, TaskType } from "../App";
 import { Button } from "./Button";
 
@@ -6,6 +7,7 @@ type TodoListPropsType = {
   tasks: Array<TaskType>;
   removeTask: (taskId: string) => void;
   changeFilter: (filter: FilterValuesType) => void;
+  addTask: (title: string) => void;
 };
 
 const TodoList = ({
@@ -13,29 +15,54 @@ const TodoList = ({
   tasks,
   removeTask,
   changeFilter,
+  addTask,
 }: TodoListPropsType) => {
+  const [taskTitle, setTaskTitle] = useState("");
+
+  const addTaskHandler = () => {
+    addTask(taskTitle);
+    setTaskTitle("");
+  };
+
+  const changeTaskTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setTaskTitle(event.currentTarget.value);
+  };
+
+  const addTaskOnKeyUpHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      addTaskHandler();
+    }
+  };
+
+  const changeFilterTasksHandler = (filter: FilterValuesType) => {
+    changeFilter(filter);
+  };
+
   return (
     <div>
       <h3>{title}</h3>
       <div>
-        <input />
-        <Button title={"+"} onClickHandler={() => {}} />
+        <input
+          value={taskTitle}
+          onChange={changeTaskTitleHandler}
+          onKeyUp={addTaskOnKeyUpHandler}
+        />
+        <Button title={"+"} onClickHandler={addTaskHandler} />
       </div>
       {tasks.length === 0 ? (
         <p>Тасок нет</p>
       ) : (
         <ul>
           {tasks.map((task) => {
+            const removeTaskHandler = () => {
+              removeTask(task.id);
+            };
+
             return (
               <li key={task.id}>
                 <input type="checkbox" checked={task.isDone} />
                 <span>{task.title}</span>
-                <Button
-                  title={"x"}
-                  onClickHandler={() => {
-                    removeTask(task.id);
-                  }}
-                />
+                <Button title={"x"} onClickHandler={removeTaskHandler} />
               </li>
             );
           })}
@@ -44,21 +71,15 @@ const TodoList = ({
       <div>
         <Button
           title={"All"}
-          onClickHandler={() => {
-            changeFilter("all");
-          }}
+          onClickHandler={() => changeFilterTasksHandler("all")}
         />
         <Button
           title={"Active"}
-          onClickHandler={() => {
-            changeFilter("active");
-          }}
+          onClickHandler={() => changeFilterTasksHandler("active")}
         />
         <Button
           title={"Completed"}
-          onClickHandler={() => {
-            changeFilter("completed");
-          }}
+          onClickHandler={() => changeFilterTasksHandler("completed")}
         />
       </div>
     </div>
