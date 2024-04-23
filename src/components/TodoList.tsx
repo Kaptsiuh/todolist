@@ -4,9 +4,10 @@ import { Button } from "./Button";
 
 type TodoListPropsType = {
   title: string;
+  todolistId: string;
   tasks: Array<TaskType>;
   removeTask: (taskId: string) => void;
-  changeFilter: (filter: FilterValuesType) => void;
+  changeFilter: (filter: FilterValuesType, todolistId: string) => void;
   addTask: (title: string) => void;
   changeTaskStatus: (taskId: string, taskStatus: boolean) => void;
   filter: FilterValuesType;
@@ -15,6 +16,7 @@ type TodoListPropsType = {
 export const TodoList = ({
   title,
   tasks,
+  todolistId,
   removeTask,
   changeFilter,
   addTask,
@@ -23,6 +25,14 @@ export const TodoList = ({
 }: TodoListPropsType) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // todo: перенести из App;
+  // const tasksForTodolist: TaskType[] =
+  //   filter === "active"
+  //     ? tasks.filter((task) => !task.isDone)
+  //     : filter === "completed"
+  //     ? tasks.filter((task) => task.isDone)
+  //     : tasks;
 
   const addTaskHandler = () => {
     if (taskTitle.trim() !== "") {
@@ -45,7 +55,7 @@ export const TodoList = ({
   };
 
   const changeFilterTasksHandler = (filter: FilterValuesType) => {
-    changeFilter(filter);
+    changeFilter(filter, todolistId);
   };
 
   return (
