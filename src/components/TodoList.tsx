@@ -6,10 +6,15 @@ type TodoListPropsType = {
   title: string;
   todolistId: string;
   tasks: Array<TaskType>;
-  removeTask: (taskId: string) => void;
+  removeTask: (taskId: string, todolistId: string) => void;
   changeFilter: (filter: FilterValuesType, todolistId: string) => void;
-  addTask: (title: string) => void;
-  changeTaskStatus: (taskId: string, taskStatus: boolean) => void;
+  addTask: (title: string, todolistId: string) => void;
+  changeTaskStatus: (
+    taskId: string,
+    taskStatus: boolean,
+    todolistId: string
+  ) => void;
+  removeTodolist: (todolistId: string) => void;
   filter: FilterValuesType;
 };
 
@@ -22,6 +27,7 @@ export const TodoList = ({
   addTask,
   changeTaskStatus,
   filter,
+  removeTodolist,
 }: TodoListPropsType) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +42,7 @@ export const TodoList = ({
 
   const addTaskHandler = () => {
     if (taskTitle.trim() !== "") {
-      addTask(taskTitle.trim());
+      addTask(taskTitle.trim(), todolistId);
       setTaskTitle("");
     } else {
       setError("Title is required");
@@ -58,9 +64,14 @@ export const TodoList = ({
     changeFilter(filter, todolistId);
   };
 
+  const removeTodolistHandler = () => {
+    removeTodolist(todolistId);
+  };
+
   return (
     <div>
       <h3>{title}</h3>
+      <Button title={"x"} onClickHandler={removeTodolistHandler} />
       <div>
         <input
           className={error ? "error" : ""}
@@ -77,14 +88,14 @@ export const TodoList = ({
         <ul>
           {tasks.map((task) => {
             const removeTaskHandler = () => {
-              removeTask(task.id);
+              removeTask(task.id, todolistId);
             };
 
             const changeTaskStatusHandler = (
               e: ChangeEvent<HTMLInputElement>
             ) => {
               const newStatusValue = e.currentTarget.checked;
-              changeTaskStatus(task.id, newStatusValue);
+              changeTaskStatus(task.id, newStatusValue, todolistId);
             };
 
             return (
