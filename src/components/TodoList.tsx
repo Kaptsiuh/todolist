@@ -32,13 +32,19 @@ export const TodoList = ({
   const [taskTitle, setTaskTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // todo: перенести из App;
-  // const tasksForTodolist: TaskType[] =
-  //   filter === "active"
-  //     ? tasks.filter((task) => !task.isDone)
-  //     : filter === "completed"
-  //     ? tasks.filter((task) => task.isDone)
-  //     : tasks;
+  const filtered = () => {
+    const allTodolistTasks = tasks;
+    let tasksForTodolist: TaskType[] = allTodolistTasks;
+
+    if (filter === "active") {
+      tasksForTodolist = tasks.filter((task) => !task.isDone);
+    }
+
+    if (filter === "completed") {
+      tasksForTodolist = tasks.filter((task) => task.isDone);
+    }
+    return tasksForTodolist;
+  };
 
   const addTaskHandler = () => {
     if (taskTitle.trim() !== "") {
@@ -86,7 +92,7 @@ export const TodoList = ({
         <p>Тасок нет</p>
       ) : (
         <ul>
-          {tasks.map((task) => {
+          {filtered().map((task) => {
             const removeTaskHandler = () => {
               removeTask(task.id, todolistId);
             };
