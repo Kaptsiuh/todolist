@@ -80,21 +80,21 @@ export const TodoList = ({
         <ul>
           {tasks.map((task) => {
             return (
-              <li key={task.id} className={task.isDone ? "is-done" : ""}>
+              <li key={task.taskId} className={task.isDone ? "is-done" : ""}>
                 <input
                   type="checkbox"
                   checked={task.isDone}
-                  onChange={(e) => changeTaskStatusHandler(task.id, e)}
+                  onChange={(e) => changeTaskStatusHandler(task.taskId, e)}
                 />
                 <EditableSpan
                   oldTitle={task.title}
                   updateItem={(newTitle) =>
-                    updateTaskHandler(task.id, newTitle)
+                    updateTaskHandler(task.taskId, newTitle)
                   }
                 />
                 <Button
                   title={"x"}
-                  onClickHandler={() => removeTaskHandler(task.id)}
+                  onClickHandler={() => removeTaskHandler(task.taskId)}
                 />
               </li>
             );
