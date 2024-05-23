@@ -1,8 +1,15 @@
 import { ChangeEvent } from "react";
 import { FilterValuesType, TaskType } from "../App";
-import { Button } from "./Button";
 import { AddItemForm } from "./AddItemForm";
 import { EditableSpan } from "./EditableSpan";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Box from "@mui/material/Box";
+import { filterButtonsContainerSx, getListItemSx } from "./Todolist.styles";
 
 type TodoListPropsType = {
   title: string;
@@ -69,55 +76,68 @@ export const TodoList = ({
 
   return (
     <div>
-      <h3>
-        <EditableSpan oldTitle={title} updateItem={updateTodolistHandler} />
-      </h3>
-      <Button title={"x"} onClickHandler={removeTodolistHandler} />
+      <Box sx={filterButtonsContainerSx}>
+        <h3>
+          <EditableSpan oldTitle={title} updateItem={updateTodolistHandler} />
+        </h3>
+        <IconButton aria-label="delete" onClick={removeTodolistHandler}>
+          <DeleteIcon />
+        </IconButton>
+      </Box>
       <AddItemForm addItem={addTaskHandler} />
       {tasks.length === 0 ? (
         <p>Тасок нет</p>
       ) : (
-        <ul>
+        <List>
           {tasks.map((task) => {
             return (
-              <li key={task.id} className={task.isDone ? "is-done" : ""}>
-                <input
-                  type="checkbox"
-                  checked={task.isDone}
-                  onChange={(e) => changeTaskStatusHandler(task.id, e)}
-                />
-                <EditableSpan
-                  oldTitle={task.title}
-                  updateItem={(newTitle) =>
-                    updateTaskHandler(task.id, newTitle)
-                  }
-                />
-                <Button
-                  title={"x"}
-                  onClickHandler={() => removeTaskHandler(task.id)}
-                />
-              </li>
+              <ListItem key={task.id} sx={getListItemSx(task.isDone)}>
+                <div>
+                  <Checkbox
+                    checked={task.isDone}
+                    onChange={(e) => changeTaskStatusHandler(task.id, e)}
+                  />
+                  <EditableSpan
+                    oldTitle={task.title}
+                    updateItem={(newTitle) =>
+                      updateTaskHandler(task.id, newTitle)
+                    }
+                  />
+                </div>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => removeTaskHandler(task.id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItem>
             );
           })}
-        </ul>
+        </List>
       )}
-      <div>
+      <Box sx={filterButtonsContainerSx}>
         <Button
-          className={filter === "all" ? "active-filter" : ""}
-          title={"All"}
-          onClickHandler={() => changeFilterTasksHandler("all")}
-        />
+          variant={filter === "all" ? "outlined" : "contained"}
+          color="error"
+          onClick={() => changeFilterTasksHandler("all")}
+        >
+          All
+        </Button>
         <Button
-          className={filter === "active" ? "active-filter" : ""}
-          title={"Active"}
-          onClickHandler={() => changeFilterTasksHandler("active")}
-        />
+          variant={filter === "active" ? "outlined" : "contained"}
+          color="warning"
+          onClick={() => changeFilterTasksHandler("active")}
+        >
+          Active
+        </Button>
         <Button
-          className={filter === "completed" ? "active-filter" : ""}
-          title={"Completed"}
-          onClickHandler={() => changeFilterTasksHandler("completed")}
-        />
-      </div>
+          variant={filter === "completed" ? "outlined" : "contained"}
+          color={"success"}
+          onClick={() => changeFilterTasksHandler("completed")}
+        >
+          Completed
+        </Button>
+      </Box>
     </div>
   );
 };

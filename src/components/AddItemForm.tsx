@@ -1,5 +1,9 @@
 import { ChangeEvent, KeyboardEvent, useState } from "react";
-import { Button } from "./Button";
+import TextField from "@mui/material/TextField";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import IconButton from "@mui/material/IconButton";
+import { Box } from "@mui/material";
+import { filterButtonsContainerSx } from "./Todolist.styles";
 
 type PropsType = {
   addItem: (title: string) => void;
@@ -30,15 +34,21 @@ export const AddItemForm = ({ addItem }: PropsType) => {
   };
 
   return (
-    <div>
-      <input
-        className={error ? "error" : ""}
+    <Box sx={filterButtonsContainerSx}>
+      <TextField
+        id="outlined-basic"
+        label="Enter a title"
+        variant="outlined"
+        size="small"
         value={title}
         onChange={changeItemTitleHandler}
         onKeyUp={addItemOnKeyUpHandler}
+        error={!!error}
+        helperText={error}
       />
-      <Button title={"+"} onClickHandler={addItemHandler} />
-      {error && <div className={"error-message"}>{error}</div>}
-    </div>
+      <IconButton color="primary" onClick={addItemHandler}>
+        <AddBoxIcon />
+      </IconButton>
+    </Box>
   );
 };

@@ -3,6 +3,13 @@ import "./App.css";
 import { TodoList } from "./components/TodoList";
 import { useState } from "react";
 import { AddItemForm } from "./components/AddItemForm";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import { ThemeProvider } from "@emotion/react";
+import { CssBaseline, createTheme } from "@mui/material";
+import { AppBarHeader } from "./components/AppBarHeader";
 
 export type TaskType = {
   id: string;
@@ -21,6 +28,8 @@ export type TodolistType = {
 export type TaskStateType = {
   [key: string]: TaskType[];
 };
+
+type ThemeMode = "dark" | "light";
 
 function App() {
   const todolistID1 = v1();
@@ -115,38 +124,81 @@ function App() {
     );
   };
 
+  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
+
+  const theme = createTheme({
+    palette: {
+      mode: themeMode === "light" ? "light" : "dark",
+      primary: {
+        main: "#cc19d2",
+        contrastText: "white",
+      },
+      secondary: {
+        light: "#757ce8",
+        main: "#3f50b5",
+        dark: "#002884",
+        contrastText: "#fff",
+      },
+    },
+  });
+
+  const changeModeHandler = () => {
+    setThemeMode(themeMode === "light" ? "dark" : "light");
+  };
+
   return (
     <div className="App">
-      <AddItemForm addItem={addTodolist} />
-      {todolists.map((tl) => {
-        const allTodolistTasks = tasks[tl.id];
-        let tasksForTodolist: TaskType[] = allTodolistTasks;
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box sx={{ flexGrow: 1, mb: 10 }}>
+          <AppBarHeader changeModeHandler={changeModeHandler} />
+        </Box>
 
-        if (tl.filter === "active") {
-          tasksForTodolist = allTodolistTasks.filter((task) => !task.isDone);
-        }
+        <Container fixed>
+          <Grid container sx={{ mb: 5 }}>
+            <AddItemForm addItem={addTodolist} />
+          </Grid>
+          <Grid container spacing={4}>
+            {todolists.map((tl) => {
+              const allTodolistTasks = tasks[tl.id];
+              let tasksForTodolist: TaskType[] = allTodolistTasks;
 
-        if (tl.filter === "completed") {
-          tasksForTodolist = allTodolistTasks.filter((task) => task.isDone);
-        }
+              if (tl.filter === "active") {
+                tasksForTodolist = allTodolistTasks.filter(
+                  (task) => !task.isDone
+                );
+              }
 
-        return (
-          <TodoList
-            key={tl.id}
-            todolistId={tl.id}
-            title={tl.title}
-            tasks={tasksForTodolist}
-            removeTask={removeTask}
-            changeFilter={changeFilter}
-            addTask={addTask}
-            changeTaskStatus={changeTaskStatus}
-            filter={tl.filter}
-            removeTodolist={removeTodolist}
-            updateTask={updateTask}
-            updateTodolist={updateTodolist}
-          />
-        );
-      })}
+              if (tl.filter === "completed") {
+                tasksForTodolist = allTodolistTasks.filter(
+                  (task) => task.isDone
+                );
+              }
+
+              return (
+                <Grid item>
+                  <Paper elevation={6} sx={{ p: "20px" }}>
+                    <TodoList
+                      key={tl.id}
+                      todolistId={tl.id}
+                      title={tl.title}
+                      tasks={tasksForTodolist}
+                      removeTask={removeTask}
+                      changeFilter={changeFilter}
+                      addTask={addTask}
+                      changeTaskStatus={changeTaskStatus}
+                      filter={tl.filter}
+                      removeTodolist={removeTodolist}
+                      updateTask={updateTask}
+                      updateTodolist={updateTodolist}
+                    />
+                  </Paper>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Container>
+      </ThemeProvider>
     </div>
   );
 }
