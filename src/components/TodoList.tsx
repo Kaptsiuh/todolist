@@ -18,11 +18,7 @@ type TodoListPropsType = {
   removeTask: (taskId: string, todolistId: string) => void;
   changeFilter: (filter: FilterValuesType, todolistId: string) => void;
   addTask: (title: string, todolistId: string) => void;
-  changeTaskStatus: (
-    taskId: string,
-    taskStatus: boolean,
-    todolistId: string
-  ) => void;
+  changeTaskStatus: (taskId: string, taskStatus: boolean, todolistId: string) => void;
   removeTodolist: (todolistId: string) => void;
   filter: FilterValuesType;
   updateTask: (todolistId: string, taskId: string, title: string) => void;
@@ -62,10 +58,7 @@ export const TodoList = ({
     updateTask(todolistId, taskId, newTitle);
   };
 
-  const changeTaskStatusHandler = (
-    taskId: string,
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
+  const changeTaskStatusHandler = (taskId: string, e: ChangeEvent<HTMLInputElement>) => {
     const newStatusValue = e.currentTarget.checked;
     changeTaskStatus(taskId, newStatusValue, todolistId);
   };
@@ -91,23 +84,18 @@ export const TodoList = ({
         <List>
           {tasks.map((task) => {
             return (
-              <ListItem key={task.id} sx={getListItemSx(task.isDone)}>
+              <ListItem key={task.taskId} sx={getListItemSx(task.isDone)}>
                 <div>
                   <Checkbox
                     checked={task.isDone}
-                    onChange={(e) => changeTaskStatusHandler(task.id, e)}
+                    onChange={(e) => changeTaskStatusHandler(task.taskId, e)}
                   />
                   <EditableSpan
                     oldTitle={task.title}
-                    updateItem={(newTitle) =>
-                      updateTaskHandler(task.id, newTitle)
-                    }
+                    updateItem={(newTitle) => updateTaskHandler(task.taskId, newTitle)}
                   />
                 </div>
-                <IconButton
-                  aria-label="delete"
-                  onClick={() => removeTaskHandler(task.id)}
-                >
+                <IconButton aria-label="delete" onClick={() => removeTaskHandler(task.taskId)}>
                   <DeleteIcon />
                 </IconButton>
               </ListItem>
