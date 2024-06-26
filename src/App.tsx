@@ -56,9 +56,7 @@ function App() {
   const changeFilter = (filterValue: FilterValuesType, todolistId: string) => {
     setTodoFromServer(
       todoFromServer.map((todos) =>
-        todos.todolistId === todolistId
-          ? { ...todos, filter: filterValue }
-          : todos
+        todos.todolistId === todolistId ? { ...todos, filter: filterValue } : todos
       )
     );
   };
@@ -71,26 +69,18 @@ function App() {
     };
     setTodoFromServer(
       todoFromServer.map((todos) =>
-        todos.todolistId === todolistId
-          ? { ...todos, tasks: [newTask, ...todos.tasks] }
-          : todos
+        todos.todolistId === todolistId ? { ...todos, tasks: [newTask, ...todos.tasks] } : todos
       )
     );
   };
 
-  const changeTaskStatus = (
-    taskId: string,
-    isDone: boolean,
-    todolistId: string
-  ) => {
+  const changeTaskStatus = (taskId: string, isDone: boolean, todolistId: string) => {
     setTodoFromServer(
       todoFromServer.map((todos) =>
         todos.todolistId === todolistId
           ? {
               ...todos,
-              tasks: todos.tasks.map((t) =>
-                t.taskId === taskId ? { ...t, isDone } : t
-              ),
+              tasks: todos.tasks.map((t) => (t.taskId === taskId ? { ...t, isDone } : t)),
             }
           : todos
       )
